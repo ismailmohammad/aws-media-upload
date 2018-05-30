@@ -2,8 +2,6 @@
 "use strict";
 // Add the AWS SDK
 const AWS = require('aws-sdk');
-// Require fileType for validation of files
-const fileType = require('file-type');
 // Require uuidv4 for name creation
 const uuidv4 = require('uuid/v4');
 // Set up config variables through env variables for AWS Lambda
@@ -27,38 +25,35 @@ const acceptableTypes = [
 const maxLength = 5000000;
 // Main handler -> upload.handler for the Lambda Function
 exports.handler = (event, context, callback) => {
-    if (!event.body || !event.body.base64) {
+    if (!event || !event.base64 || !event.type) {
         callback(null, {
             statusCode: '400',
             headers: {'Access-Control-Allow-Origin': '*'},
-            body: JSON.stringify({"message": "base64 is a required parameter"})
+            body: JSON.stringify({"message": "base64 and type are required parameter"})
         });
     } else {
-        // Get Upload data
-        const body = JSON.parse(event.body);
-        const buffer = new Buffer(body['image'], 'base64');
-        // Get fileType Information
-        const fileTypeInfo = fileType(buffer);
+        const buffer = new Buffer(event.base64, 'base64');
         // Ensure Image is correct filetype and less than
-        if (buffer.length < maxLength  && acceptableTypes.includes(fileTypeInfo.mime)) {
+        if (buffer.length < maxLength  && acceptableTypes.includes('image/' + event.type) ) {
             // Set name to uuidv4 generated string and the fileType
-            const name = `${uuidv4()}.${fileTypeInfo.ext}`;
+            const name = uuidv4() + "." + event.type;
+            const bucketName = process.env.BUCKET;
             const params = {
                 Body: buffer,
                 Key: name,
-                Bucket: process.env.BUCKET,
+                Bucket: bucketName,
                 ContentEncoding: 'base64',
-                ContentType: fileTypeInfo.mime
+                ContentType: 'image/' + event.type
             };
             // Upload File to S3 Container
             s3.putObject(params, (err, data) => {
                 // If Upload error, callback with statuscode and the respective error message
                 if (err) callback(new Error([err.statusCode], [err.message]));
+                const fileUrl = 'https://s3.us-east-2.amazonaws.com/' + bucketName + '/' + name;
                 // Otherwise callback with Statuscode 200
                 callback(null, {
-                    statusCode: '200',
-                    headers: {'Access-Control-Allow-Origin': '*'},
-                    body: JSON.stringify({'status': 'ok', 'url': data, })
+                    status: 'ok',
+                    url: fileUrl
                 });
             });
         } else {
