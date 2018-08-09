@@ -4,7 +4,7 @@ Media processing services provide media upload, processing and distribution serv
 At this moment, only support image upload.
 
 ## Deployment
-To deploy CheaprEats media processing services, 2 AWS Services are required
+To deploy media processing services, 2 AWS Services are required
 * AWS Lambda Function (Runtime: Node.js 8.10)
 * AWS S3 Bucket
 
@@ -16,8 +16,7 @@ The following enviroment variables must be within the Lambda Function Settings
 
 ## Usage
 
-Base URL (QA): `https://85djasd501.execute-api.us-east-1.amazonaws.com/qa`
-Base URL (Prod): Not Initialized yet 
+Base URL: `https://85djasd501.execute-api.us-east-1.amazonaws.com/qa` (defunct., replace with your endpoint for requests)
 
 ### Upload Image - upload.js
 
