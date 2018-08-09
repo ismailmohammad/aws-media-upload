@@ -1,7 +1,7 @@
 # Media Processing Services - Ported to AWS
 
-CheaprEats media processing services provide media upload, processing and distribution services.
-At this moment we only support image upload.
+Media processing services provide media upload, processing and distribution services.
+At this moment, only support image upload.
 
 ## Deployment
 To deploy CheaprEats media processing services, 2 AWS Services are required
@@ -40,5 +40,5 @@ Base URL (Prod): Not Initialized yet
 }
 
 // Result
-{"status":"ok","url":"https://s3.us-east-2.amazonaws.com/cheapreatsmediabucket/431006d6-4735-4bbf-8dfa-3b68b67963b9.png"}
+{"status":"ok","url":"https://s3.us-east-2.amazonaws.com/yourmediabucket/431006d6-4735-4bbf-8dfa-3b68b67963b9.png"}
 ```
